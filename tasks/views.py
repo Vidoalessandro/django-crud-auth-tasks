@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth import login
 from django.contrib.auth.models import User
+from django.db import IntegrityError
 
 # Create your views here.
 @csrf_protect
@@ -22,13 +24,17 @@ def signup(request):
             try:
                 user = User.objects.create_user(username=request.POST['username'], password=request.POST['password1'])
                 user.save()
-                return HttpResponse('User created succesfully')
-            except:
+                login(request, user)
+                return redirect('tasks')
+            except IntegrityError:
                 return render(request, 'signup.html', {
                     'form': UserCreationForm,
-                    'error': 'Username already exists',
+                    'error': 'User already exists',
                 })
         return render(request, 'signup.html', {
                 'form': UserCreationForm,
                 'error': 'Passwords do not match',
             })
+        
+def tasks(request):
+    return render(request, 'tasks.html')
