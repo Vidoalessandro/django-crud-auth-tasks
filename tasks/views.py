@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.views.decorators.csrf import csrf_protect
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 
@@ -38,3 +38,7 @@ def signup(request):
         
 def tasks(request):
     return render(request, 'tasks.html')
+
+def signout(request):
+    logout(request)
+    return redirect('home')
