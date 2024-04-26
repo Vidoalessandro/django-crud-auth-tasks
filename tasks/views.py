@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.db import IntegrityError
+from .form import TaskForm
 
 # Create your views here.
 @csrf_protect
@@ -59,3 +60,15 @@ def signin(request):
         else:
             login(request, user)
             return redirect('tasks')
+        
+def create_task(request):
+    
+    if request.method == 'GET':
+        return render(request, 'create_task.html', {
+            'form': TaskForm,
+        })
+    else:
+        print(request.POST)
+        return render(request, 'create_task.html', {
+            'form': TaskForm,
+        })
