@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.views.decorators.csrf import csrf_protect
@@ -7,6 +6,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from .form import TaskForm
+from .models import Tasks
 
 # Create your views here.
 @csrf_protect
@@ -38,7 +38,10 @@ def signup(request):
             })
         
 def tasks(request):
-    return render(request, 'tasks.html')
+    tasks = Tasks.objects.filter(user=request.user, datecompleted__isnull=True)
+    return render(request, 'tasks.html', {
+        'tasks': tasks,
+    })
 
 def signout(request):
     logout(request)
