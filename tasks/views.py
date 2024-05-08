@@ -7,6 +7,7 @@ from django.db import IntegrityError
 from .form import TaskForm
 from .models import Tasks
 from django.utils import timezone
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 @csrf_protect
@@ -36,7 +37,8 @@ def signup(request):
                 'form': UserCreationForm,
                 'error': 'Passwords do not match',
             })
-        
+       
+@login_required        
 def tasks(request):
     tasks = Tasks.objects.filter(user=request.user, datecompleted__isnull=True)
     condition = 'pending'
@@ -45,6 +47,7 @@ def tasks(request):
         'condition': condition,
     })
 
+@login_required
 def signout(request):
     logout(request)
     return redirect('home')
@@ -66,8 +69,9 @@ def signin(request):
             login(request, user)
             return redirect('tasks')
         
+@login_required
 def create_task(request):
-    
+
     if request.method == 'GET':
         return render(request, 'create_task.html', {
             'form': TaskForm,
@@ -84,7 +88,8 @@ def create_task(request):
                 'form': TaskForm,
                 'error': 'Please provide valid data',
             })
-            
+
+@login_required            
 def task_detail(request, task_id):
     if request.method == 'GET':
             task = get_object_or_404(Tasks, pk=task_id, user=request.user)
@@ -105,20 +110,23 @@ def task_detail(request, task_id):
                 'form': form,
                 'error': "Error updating task"
             })
-            
+    
+@login_required        
 def complete_task(request, task_id):
     task = get_object_or_404(Tasks, pk=task_id, user=request.user)
     if request.method == 'POST':
         task.datecompleted = timezone.now()
         task.save()
         return redirect('tasks')
-    
+
+@login_required    
 def delete_task(request, task_id):
     task = get_object_or_404(Tasks, pk=task_id, user=request.user)
     if request.method == 'POST':
         task.delete()
         return redirect('tasks')
-    
+  
+@login_required  
 def tasks_completed(request):
     tasks = Tasks.objects.filter(user=request.user, datecompleted__isnull=False).order_by('-datecompleted')
     condition = 'completed'
