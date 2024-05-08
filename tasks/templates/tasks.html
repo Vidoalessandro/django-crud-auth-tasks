@@ -2,7 +2,7 @@
 
 {% block content %}
     
-    <h1>Tasks pending</h1>
+    <h1>Tasks {{condition}}</h1>
 
     <ul>
         {% for task in tasks %}
@@ -16,6 +16,8 @@
                     {% endif %}
                     <p>{{task.description}}</p>
                     <p>{{task.user.username}}</p>
+
+                    <p>{{task.datecompleted|date:'M j Y:i'}}</p>
                 </a>
             </li>
 

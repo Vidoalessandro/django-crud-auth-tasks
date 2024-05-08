@@ -39,8 +39,10 @@ def signup(request):
         
 def tasks(request):
     tasks = Tasks.objects.filter(user=request.user, datecompleted__isnull=True)
+    condition = 'pending'
     return render(request, 'tasks.html', {
         'tasks': tasks,
+        'condition': condition,
     })
 
 def signout(request):
@@ -116,4 +118,12 @@ def delete_task(request, task_id):
     if request.method == 'POST':
         task.delete()
         return redirect('tasks')
+    
+def tasks_completed(request):
+    tasks = Tasks.objects.filter(user=request.user, datecompleted__isnull=False).order_by('-datecompleted')
+    condition = 'completed'
+    return render(request, 'tasks.html', {
+        'tasks': tasks,
+        'condition': condition,
+    })
     
