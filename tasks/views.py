@@ -42,9 +42,11 @@ def signup(request):
 def tasks(request):
     tasks = Tasks.objects.filter(user=request.user, datecompleted__isnull=True)
     condition = 'pending'
+    completed = 'Not completed'
     return render(request, 'tasks.html', {
         'tasks': tasks,
         'condition': condition,
+        'completed': completed,
     })
 
 @login_required
